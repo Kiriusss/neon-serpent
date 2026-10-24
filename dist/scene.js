@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { WORLD } from './engine.js';
+import { WORLD } from './engine.js?v=2.1';
 
 const CELL = 1.35, W = WORLD.x * CELL, D = WORLD.z * CELL, H = WORLD.y * CELL;
 const CENTER = new THREE.Vector3(0, H / 2 - .1, 0), FORWARD = new THREE.Vector3(0, 0, 1);

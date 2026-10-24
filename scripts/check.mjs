@@ -9,7 +9,7 @@ for(const file of all.filter(f=>f.endsWith('.js'))){
   const check=spawnSync(process.execPath,['--check',file],{encoding:'utf8'});if(check.status!==0)throw new Error(check.stderr);
   const source=await readFile(file,'utf8');
   for(const match of source.matchAll(/(?:from\s*|import\s*)['"]([^'"]+)['"]/g)){
-    const spec=match[1];const target=spec==='three'?path.join(dist,'vendor','three.module.js'):spec.startsWith('three/addons/')?path.join(dist,'vendor','addons',spec.slice(13)):spec.startsWith('.')?path.resolve(path.dirname(file),spec):null;
+    const spec=match[1].split('?')[0];const target=spec==='three'?path.join(dist,'vendor','three.module.js'):spec.startsWith('three/addons/')?path.join(dist,'vendor','addons',spec.slice(13)):spec.startsWith('.')?path.resolve(path.dirname(file),spec):null;
     if(!target)throw new Error('Unexpected external import: '+spec);await access(target);imports++;
   }
 }

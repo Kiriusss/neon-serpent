@@ -1,7 +1,7 @@
-import { SnakeGame, WORLD, UPGRADES } from './engine.js';
-import { Arena } from './scene.js';
-import { SoundEngine } from './audio.js';
-import { CHARACTERS, GACHA_RULES, GACHA_COST, MAX_LEVEL, createProfile, sanitizeProfile, getStats, pull, selectCharacter, levelUp, upgradeCost, settleRun } from './meta.js';
+import { SnakeGame, WORLD, UPGRADES } from './engine.js?v=2.1';
+import { Arena } from './scene.js?v=2.1';
+import { SoundEngine } from './audio.js?v=2.1';
+import { CHARACTERS, GACHA_RULES, GACHA_COST, MAX_LEVEL, createProfile, sanitizeProfile, getStats, pull, selectCharacter, levelUp, upgradeCost, settleRun } from './meta.js?v=2.1';
 
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const two = n => String(Math.floor(n)).padStart(2, '0');
