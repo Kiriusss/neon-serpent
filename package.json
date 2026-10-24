@@ -1,0 +1,1 @@
+{"name":"neon-serpent","private":true,"type":"module","scripts":{"dev":"node server.mjs","test":"node --test tests/engine.test.mjs","check":"node scripts/check.mjs","prepare-pages":"node scripts/prepare-pages.mjs"},"dependencies":{"three":"0.170.0"}}

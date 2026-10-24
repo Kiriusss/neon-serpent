@@ -1,0 +1,4 @@
+node_modules/
+.site-*
+*.tar.gz
+.openai/

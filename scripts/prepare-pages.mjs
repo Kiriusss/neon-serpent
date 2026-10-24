@@ -1,0 +1,12 @@
+import {cp, mkdir, writeFile, readFile, access} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const source=path.join(root,'dist'),target=path.join(root,'docs');
+await access(path.join(source,'index.html'));
+await mkdir(target,{recursive:true});
+await cp(source,target,{recursive:true});
+await writeFile(path.join(target,'.nojekyll'),'');
+const html=await readFile(path.join(target,'index.html'),'utf8');
+if(!html.includes('NEON SERPENT'))throw new Error('Unexpected entry page');
+console.log('GitHub Pages ready: docs/ (self-contained, no CDN dependencies)');
