@@ -1,79 +1,57 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#060a12"><meta name="description" content="NEON SERPENT — 驾驭霓虹机械蛇，穿梭悬浮竞技场。相位冲刺、连续吞噬、无限进化。">
-  <title>NEON SERPENT — 霓虹贪吃蛇</title>
-  <link rel="icon" href="./favicon.svg"><link rel="stylesheet" href="./style.css">
-  <script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/addons/"}}</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#10151f">
+<meta name="description" content="星骸回响：驾驶衔尾机穿越真正的三维折叠遗迹，唤醒驾驶员回响，自由构筑，挑战寂星之心。">
+<title>星骸回响 — ECHOES OF THE STARFALL</title>
+<link rel="icon" href="./favicon.svg"><link rel="stylesheet" href="./style.css?v=2.0">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/addons/"}}</script>
 </head>
 <body>
-  <svg class="icon-defs" aria-hidden="true"><defs>
-    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
-    <symbol id="i-muted" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM16 9l6 6m0-6-6 6"/></symbol>
-    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
-    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-13h-7z"/></symbol>
-    <symbol id="i-cube" viewBox="0 0 24 24"><path d="m12 2 9 5v10l-9 5-9-5V7zm0 10v10M3 7l9 5 9-5M7.5 4.5l9 5"/></symbol>
-    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 3h8v7a4 4 0 0 1-8 0zm0 2H4v3a4 4 0 0 0 4 4m8-7h4v3a4 4 0 0 1-4 4m-4 2v6m-4 0h8"/></symbol>
-  </defs></svg>
-  <canvas id="world" tabindex="-1" aria-label="3D 霓虹贪吃蛇竞技场"></canvas>
-  <div class="vignette" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>
-  <div id="flash" aria-hidden="true"></div>
-  <header class="topbar">
-    <a class="brand" href="./" aria-label="NEON SERPENT 首页"><span class="brand-mark"><svg><use href="#i-cube"/></svg></span><span>NEON<span class="brand-light"> / SERPENT</span><small>EXPERIMENTAL ARCADE</small></span></a>
-    <div class="top-center"><span class="live-dot"></span> ALL SYSTEMS ONLINE <span class="separator">/</span> <span>SECTOR 07</span></div>
-    <nav class="tools" aria-label="游戏工具">
-      <button id="quality" class="text-tool" title="切换画质">极光画质</button>
-      <button id="sound" class="icon-button" title="静音 (M)" aria-label="静音" aria-pressed="false"><svg><use href="#i-volume"/></svg></button>
-      <button id="fullscreen" class="icon-button" title="全屏 (F)" aria-label="全屏"><svg><use href="#i-expand"/></svg></button>
-      <button id="pause-button" class="icon-button play-only" title="暂停 (Esc)" aria-label="暂停"><svg><use href="#i-pause"/></svg></button>
-    </nav>
-  </header>
-
-  <main id="home" class="home">
-    <div class="eyebrow"><span></span> NEXT-GEN SNAKE EXPERIENCE <span class="tag">VOL. 01</span></div>
-    <h1>NEON<br><span>SERPENT<span class="title-star">✳</span></span></h1>
-    <p class="headline">本能，觉醒。</p>
-    <p class="intro">进入霓虹深处。吞噬能量，突破极限。<br>这一次，经典将以全新的维度重生。</p>
-    <div class="mode-label"><span>01 — 选择你的战场</span><span class="small-line"></span></div>
-    <div class="mode-picker" role="group" aria-label="游戏模式">
-      <button class="mode active" data-mode="classic" aria-pressed="true"><span class="mode-icon">⌁</span><span><b>经典竞速</b><small>有限边界，无限可能</small></span><i></i></button>
-      <button class="mode" data-mode="infinity" aria-pressed="false"><span class="mode-icon">∞</span><span><b>无尽穿梭</b><small>穿越边界，延续传奇</small></span><i></i></button>
-    </div>
-    <div class="difficulty-row"><span>节奏</span><div role="group" aria-label="难度"><button data-difficulty="chill" aria-pressed="false">漫游</button><button data-difficulty="normal" class="active" aria-pressed="true">心跳</button><button data-difficulty="hard" aria-pressed="false">失控</button></div><span id="difficulty-note">找到你的心跳</span></div>
-    <button id="start" class="launch"><span><span class="button-spark">✦</span> 启动神经链接</span><span class="launch-right">ENTER <svg><use href="#i-arrow"/></svg></span></button>
-    <div class="home-bottom"><span><span class="key-mini">↵</span> 按 Enter 即刻进入</span><button id="help">操作指南 <span>↗</span></button></div>
-    <div class="personal-best"><svg><use href="#i-trophy"/></svg><span>个人最高纪录</span><b id="home-best">000000</b><span class="local-label">LOCAL BEST</span></div>
-  </main>
-
-  <aside class="scene-caption home-only"><div class="caption-top"><span class="live-dot"></span> LIVE SIMULATION <span>↗</span></div><div class="caption-title">THE VOID IS<br>YOUR PLAYGROUND.</div><div class="caption-coordinates">X 024 <span>·</span> Y 024 <span>·</span> Z ∞</div></aside>
-  <div class="scene-tag home-only"><span class="orbit-symbol">◎</span><span>PHASE SHIFT<small>不是所有边界，都无法穿越。</small></span></div>
-
-  <section id="hud" class="hud play-only" aria-label="游戏数据">
-    <div class="score-panel"><div class="stat-label"><span class="live-dot"></span> 当前得分 <small>SCORE</small></div><div id="score" class="score">000000</div><div class="score-meta"><span>最高 <b id="best">0</b></span><span id="mode-label">经典竞速</span></div></div>
-    <div class="run-stats"><div><span>进化等级</span><b>LV.<strong id="level">01</strong></b></div><div><span>蛇身长度</span><b id="length">07</b></div><div><span>生存时间</span><b id="time">00:00</b></div></div>
-    <div id="combo-wrap" class="combo-wrap"><div><span>连续吞噬</span><b id="combo">×1</b></div><div class="combo-track"><i id="combo-bar"></i></div><small>7 秒内再次吞噬，叠加倍率</small></div>
-  </section>
-  <div id="game-banner" class="game-banner play-only"><span id="arena-mode">SECTOR 07 / CLASSIC</span><b id="status-label">保持饥饿。保持移动。</b></div>
-  <div class="boost-panel play-only"><div class="boost-title"><svg><use href="#i-bolt"/></svg><span>相位冲刺 <small>PHASE SHIFT</small></span><b id="energy-value">100%</b></div><div class="energy-track"><i id="energy-bar"></i></div><p><kbd>SPACE</kbd> 按住加速 · 穿过蛇身 · 双倍得分</p></div>
-  <div id="feedback" class="feedback" aria-live="polite"></div>
-  <div id="countdown" class="countdown" hidden><span>神经链接建立中</span><b>3</b><small>NEURAL LINK ESTABLISHING</small></div>
-
-  <div id="modal" class="modal" hidden>
-    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <button id="modal-close" class="icon-button modal-close" aria-label="关闭"><svg><use href="#i-close"/></svg></button>
-      <div id="modal-eyebrow" class="eyebrow">NEURAL LINK / PAUSED</div><h2 id="modal-title">暂停一下，<br><span>世界等你。</span></h2>
-      <div id="modal-content"></div><div id="modal-actions"></div>
-    </section>
-  </div>
-  <div id="touch-controls" class="play-only touch-controls"><div class="dpad"><button data-turn="up" aria-label="向上">↑</button><button data-turn="left" aria-label="向左">←</button><button data-turn="down" aria-label="向下">↓</button><button data-turn="right" aria-label="向右">→</button></div><button id="touch-boost" aria-label="按住冲刺"><svg><use href="#i-bolt"/></svg><span>冲刺</span></button></div>
-  <footer class="footer"><span><i></i> BUILT FOR THE FLOW <span class="footer-sub">/ 戴上耳机，进入状态</span></span><div class="control-hint"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / 方向键移动</span><span><kbd>SPACE</kbd> 冲刺</span><span><kbd>C</kbd> 视角</span><span><kbd>ESC</kbd> 暂停</span></div><span class="version">WEBGL EXPERIENCE <b>01.0</b></span></footer>
-  <div id="toast" class="toast" role="status"></div>
-  <div id="loading" class="loading"><span class="loading-icon">✳</span><b>正在唤醒霓虹</b><span>INITIALIZING THE VOID</span></div>
-  <script type="module" src="./main.js"></script>
-  <noscript><div class="unsupported">需要启用 JavaScript 才能启动游戏。</div></noscript>
-</body>
-</html>
+<svg class="icon-defs" aria-hidden="true"><defs>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-7-7 7 7-7 7"/></symbol>
+<symbol id="i-cube" viewBox="0 0 24 24"><path d="m12 2 9 5v10l-9 5-9-5V7zm0 10v10M3 7l9 5 9-5"/></symbol>
+<symbol id="i-sound" viewBox="0 0 24 24"><path d="m11 5-5 4H3v6h3l5 4zM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+<symbol id="i-mute" viewBox="0 0 24 24"><path d="m11 5-5 4H3v6h3l5 4zM16 9l6 6m0-6-6 6"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8L20 9h-7z"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 1v6m0 10v6M1 12h6m10 0h6"/></symbol>
+</defs></svg>
+<canvas id="world" tabindex="-1" aria-label="三维折叠遗迹战场"></canvas><div class="scene-shade" aria-hidden="true"></div>
+<header class="topbar">
+<button id="brand" class="brand" aria-label="返回方舟"><span class="brand-logo"><svg><use href="#i-star"/></svg></span><span>星骸回响<small>ECHOES OF THE STARFALL</small></span><i>02</i></button>
+<nav class="tabs menu-only" aria-label="主菜单"><button class="active" data-screen="lobby">作战终端</button><button data-screen="roster">驾驶员</button><button data-screen="gacha">回响寻访 <span>NEW</span></button></nav>
+<div class="top-tools"><span class="currency menu-only" title="星晶，通过探索获得"><b>✦</b><strong id="crystals">3,200</strong></span><span class="currency material menu-only" title="共鸣芯片，用于培养驾驶员"><b>▱</b><strong id="materials">200</strong></span><button id="sound" class="icon-button" aria-label="静音" title="声音 M"><svg><use href="#i-sound"/></svg></button><button id="help" class="icon-button" aria-label="操作指南">?</button><button id="pause" class="icon-button game-only" aria-label="暂停"><svg><use href="#i-pause"/></svg></button></div>
+</header>
+<main id="menus" class="menu-only">
+<section id="lobby" class="screen lobby">
+<div class="lobby-copy"><p class="eyebrow"><i></i> ARK 07 / 深空探索协议</p><div class="chapter-label">序章 <span>文明沉没之后</span></div><h1>群星已坠落。<br>你，是<span>回声。</span></h1><p class="story-intro">坍缩把文明折进了多层空间。<br>驾驶衔尾机，回收散落的记忆星骸，<br>循着最后的信号，找到「寂星之心」。</p><button id="story" class="text-button">阅读世界档案 <span>↗</span></button>
+<div class="mission-strip"><span><b>XYZ</b> 六向空间机动</span><span><b>3 → 1</b> 自由构筑</span><span><b>05</b> 遗迹区段</span></div>
+<div class="difficulty"><span>探索强度</span><button data-difficulty="chill">观测</button><button class="active" data-difficulty="normal">深入</button><button data-difficulty="hard">侵蚀</button></div>
+<button id="start" class="primary launch"><span><svg><use href="#i-cube"/></svg> 潜入折叠遗迹</span><span>ENTER <svg><use href="#i-arrow"/></svg></span></button><p class="launch-note">每次坠落，都让下一次启航更强。<b id="best-score">最高记录 0</b></p>
+</div>
+<div class="pilot-showcase"><div class="orbit-graphic" aria-hidden="true"></div><div id="lobby-portrait" class="portrait hero-portrait" role="img" aria-label="当前驾驶员立绘"></div><div class="pilot-caption"><p id="lobby-rarity" class="rarity">R / VANGUARD</p><h2 id="lobby-name">砾石</h2><p id="lobby-title">不退场的前锋</p><blockquote id="lobby-quote">「再难的路，也能一步一步走过去。」</blockquote><button id="change-pilot" class="outline-button">切换驾驶员 <span>↗</span></button></div><span class="vertical-label">NEURAL LINK / ACTIVE</span></div>
+</section>
+<section id="roster" class="screen roster" hidden><div class="section-heading"><p class="eyebrow">PERSONNEL ARCHIVE / 驾驶员档案</p><h1>所有相遇，<span>都有回响。</span></h1><p>升级同步率，提升战斗数值；重复回响提升共鸣阶数。</p></div><div class="roster-layout"><div id="character-grid" class="character-grid"></div><article id="character-detail" class="character-detail"></article></div></section>
+<section id="gacha" class="screen gacha" hidden><div class="banner-copy"><p class="eyebrow">PERMANENT SIGNAL / 常驻回响</p><div class="banner-tag">新手首 10 次寻访必得 SSR</div><h1>循光而来。<br><span>与星辰重逢。</span></h1><p>方舟档案中，还有未曾熄灭的意识。<br>发送星晶信号，唤醒与你并肩的驾驶员。</p><div class="banner-feature"><span>SSR</span><div><b>星烬 / 白曜</b><small>超新星爆发 · 绝对防御领域</small></div></div><div class="pity-panel"><div><span>SSR 保底进度</span><b id="ssr-pity">0 / 50</b></div><div class="thin-track"><i id="pity-bar"></i></div><p id="beginner-note">新手保障生效：首次 10 抽内至少获得 1 名 SSR。</p></div><div class="pull-actions"><button id="pull-one" class="outline-button">寻访一次 <small>✦ 160</small></button><button id="pull-ten" class="primary">寻访十次 <small>✦ 1,600</small></button></div><div class="gacha-links"><button id="rates" class="text-button">概率与保底规则</button><button id="history" class="text-button">寻访记录 ↗</button></div><p class="economy-note">星晶通过探索结算获得 · 无付费入口 · 本地存档</p></div><div class="banner-art"><div class="portrait banner-portrait" style="--px:0%;--py:0%"></div><div class="banner-name">NOVA<span>星烬</span><small>「别回头。接下来的夜空，由我点亮。」</small></div><span class="vertical-label">SIGNAL FOUND / 001</span></div></section>
+</main>
+<section id="battle-hud" class="battle-hud game-only" aria-label="战斗信息">
+<aside class="left-hud"><div class="pilot-hud"><div id="hud-portrait" class="portrait"></div><div><small id="hud-rarity">R · 同步率 1</small><h3 id="hud-name">砾石</h3><span id="hud-class">衔尾机 / 神经链接</span></div></div><div class="health-label"><span>机体完整度</span><b id="hp-text">120 / 120</b></div><div class="health-track"><i id="hp-bar"></i></div><div class="shield-label">◇ 防护 <b id="shield">15</b><span id="invulnerable"></span></div><div class="score-box"><span>星骸积分</span><b id="score">000000</b></div><div class="small-stats"><span>击破 <b id="kills">00</b></span><span>长度 <b id="length">06</b></span><span>时间 <b id="time">00:00</b></span></div><div class="level-label"><b>LV.<span id="level">1</span></b><span id="xp-text">0 / 40</span></div><div class="xp-track"><i id="xp-bar"></i></div><div class="coordinate-box"><small>当前位置 / 空间坐标</small><div><span>X <b id="coord-x">7</b></span><span>Y <b id="coord-y">3</b></span><span>Z <b id="coord-z">7</b></span></div></div><div class="height-indicator"><span>高度</span><div id="height-levels"></div><strong id="height-label">L4 / 7</strong></div></aside>
+<div class="wave-hud"><p id="wave-code">SECTOR 01 / 05</p><h2 id="wave-name">破碎航道</h2><span id="objective">吞噬星骸获得经验，自动攻击附近敌人</span></div>
+<aside class="right-hud"><div class="hud-section-title">本局异构构筑 <span id="build-count">0</span></div><div id="build-list" class="build-list"><p>收集星骸，升级后选择异构技术。</p></div><div class="combat-stats"><span>攻击 <b id="stat-attack">24</b></span><span>暴击 <b id="stat-crit">10%</b></span><span>防御 <b id="stat-defense">5</b></span></div><div class="spatial-hint"><span>空间机动</span><p><kbd>W</kbd> 远离 <kbd>S</kbd> 靠近</p><p><kbd>A</kbd> 左移 <kbd>D</kbd> 右移</p><p><kbd>Q</kbd> 升高 <kbd>E</kbd> 降低</p><small>方向沿世界坐标，不随镜头旋转</small></div></aside>
+<div id="boss-hud" class="boss-hud" hidden><span>THE SILENT HEART / 寂星之心</span><div><i id="boss-bar"></i></div><small id="boss-hp"></small></div>
+<div class="ability-dock"><div class="phase-ability"><div><span><kbd>SPACE</kbd> 相位穿行</span><b id="energy-text">100%</b></div><div class="energy-track"><i id="energy-bar"></i></div><small>按住加速并穿过自身 · 松开恢复</small></div><button id="skill" class="skill-button"><span class="skill-icon"><svg><use href="#i-star"/></svg></span><span><small>F / 主动技能</small><b id="skill-name">战地重整</b></span><strong id="skill-cooldown">就绪</strong></button></div>
+</section>
+<div id="callout" class="callout" aria-live="polite"></div><div id="damage-flash" class="damage-flash" aria-hidden="true"></div>
+<div id="countdown" class="countdown" hidden><p>神经链接已建立</p><b>3</b><small>WASD 平移 · Q 升高 / E 降低 · F 技能</small></div>
+<div id="touch-controls" class="touch-controls game-only"><div class="touch-directions"><button data-turn="rise" class="rise">Q ↑ 升</button><button data-turn="up">W ↑</button><button data-turn="fall" class="fall">E ↓ 降</button><button data-turn="left">A ←</button><button data-turn="down">S ↓</button><button data-turn="right">D →</button></div><button id="touch-phase" class="touch-phase">相位<br><small>按住</small></button></div>
+<section id="upgrade-overlay" class="upgrade-overlay" hidden aria-label="选择本局升级"><div class="upgrade-heading"><p class="eyebrow">EVOLUTION PROTOCOL / 异构技术融合</p><h2>这一次，<span>由你定义进化。</span></h2><p>选择一项强化。本局叠加生效，战斗已暂停。</p></div><div id="upgrade-cards" class="upgrade-cards"></div><small class="upgrade-hint">按 1 / 2 / 3 选择，也可以点击卡片</small></section>
+<div id="summon-overlay" class="summon-overlay" hidden><div id="summon-stage" class="summon-stage"><div class="signal-ring"></div><span>正在解析深空信号</span><b>RESONANCE FOUND</b><button id="skip-summon" class="outline-button">跳过演出</button></div><div id="summon-results" class="summon-results" hidden><div class="results-heading"><p class="eyebrow">SIGNAL DECODED / 回响已抵达</p><h2>欢迎，<span>归来。</span></h2></div><div id="draw-cards" class="draw-cards"></div><div class="results-actions"><button id="draw-close" class="primary">收录回响 · 返回</button><button id="draw-roster" class="outline-button">查看驾驶员 →</button></div></div></div>
+<div id="modal" class="modal" hidden><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button id="modal-close" class="icon-button modal-close" aria-label="关闭"><svg><use href="#i-close"/></svg></button><p id="modal-eyebrow" class="eyebrow"></p><h2 id="modal-title"></h2><div id="modal-content"></div><div id="modal-actions"></div></section></div>
+<footer class="footer"><span><i></i> ARK 07 <span class="menu-only">/ 每一道轨迹，都是文明未熄的回声。</span><span class="game-only">/ 六向机动 · 自动攻击 · 躲避红色预警</span></span><div class="footer-tools"><button id="camera" class="game-only">C · 等轴视角</button><button id="quality">光影：精致</button><button id="fullscreen" title="全屏">⛶</button><span>VER 2.0</span></div></footer>
+<div id="toast" class="toast" role="status"></div><div id="loading" class="loading"><div class="loading-symbol">✦</div><h2>星骸回响</h2><p>正在连接方舟记忆库</p><small>ESTABLISHING NEURAL LINK</small></div>
+<script type="module" src="./main.js?v=2.0"></script>
+<noscript><div class="loading"><h2>请启用 JavaScript</h2><p>星骸回响需要浏览器脚本支持。</p></div></noscript>
+</body></html>

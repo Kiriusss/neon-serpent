@@ -17,5 +17,5 @@ const html=await readFile(path.join(dist,'index.html'),'utf8');const ids=[...htm
 if(new Set(ids).size!==ids.length)throw new Error('Duplicate HTML IDs');
 const main=await readFile(path.join(dist,'main.js'),'utf8');
 for(const match of main.matchAll(/\$\('#([\w-]+)(?:[\s.#>][^']*)?'\)/g))if(!ids.includes(match[1])&&match[1]!=='reload')throw new Error('Missing UI ID '+match[1]);
-for(const match of html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g))await access(path.resolve(dist,match[1]));
+for(const match of html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g))await access(path.resolve(dist,match[1].split('?')[0]));
 console.log(`Static checks passed: ${all.length} files, ${imports} resolved module imports, ${ids.length} unique UI IDs.`);

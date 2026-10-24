@@ -8,5 +8,5 @@ await mkdir(target,{recursive:true});
 await cp(source,target,{recursive:true});
 await writeFile(path.join(target,'.nojekyll'),'');
 const html=await readFile(path.join(target,'index.html'),'utf8');
-if(!html.includes('NEON SERPENT'))throw new Error('Unexpected entry page');
+if(!html.includes('星骸回响'))throw new Error('Unexpected entry page');
 console.log('GitHub Pages ready: docs/ (self-contained, no CDN dependencies)');
