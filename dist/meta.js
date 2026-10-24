@@ -1,16 +1,15 @@
 /** Local, non-monetized character recruitment and progression. */
-export const RARITY_RATES = Object.freeze({ SSR: .03, SR: .17, R: .8 });
+export const RARITY_RATES = Object.freeze({ SSR: .008, SR: .092, R: .9 });
 export const GACHA_COST = 160;
 export const MAX_LEVEL = 20;
 export const MAX_RESONANCE = 5;
 export const GACHA_RULES = Object.freeze({
-  starterCrystals: 3200,
+  starterCrystals: 1600,
   starterMaterials: 200,
   rarePity: 10,
-  ssrPity: 50,
-  beginnerPity: 10,
+  ssrPity: 80,
   resonanceCopiesPerRank: 2,
-  description: '基础概率 SSR 3% / SR 17% / R 80%；连续 10 抽内至少 SR，连续 50 抽内至少 SSR。首次 10 抽内至少 1 名 SSR，提前抽中即完成新手保底。保底跨单抽、十连继承，出 SSR 重置两种计数。重复回响每 2 份提升 1 阶共鸣，最多 5 阶，并返还共鸣芯片。',
+  description: '基础概率 SSR 0.8% / SR 9.2% / R 90%。无软保底：连续 10 抽内至少 SR，连续 80 抽内至少 SSR；单抽与十连共享并继承计数。获得 SSR 重置两种计数，获得 SR 只重置 SR 计数。新手十连遵循相同规则，不额外保证 SSR。重复回响每 2 份提升 1 阶共鸣，最多 5 阶，并返还共鸣芯片。',
 });
 
 export const CHARACTERS = Object.freeze([
@@ -19,7 +18,7 @@ export const CHARACTERS = Object.freeze([
     description: '以高火力和暴击压制敌群。她把无法归航的星光，装进了最后一枚弹匣。',
     story: '坍缩之夜，星烬为最后一艘撤离舰点亮了返航信标，自己的名字却从方舟的乘员名单中消失了。如今被唤醒的她，只记得一段不断重播的告别。她深入星骸，想找到那个曾在信号另一端回答她的人。',
     quote: '别回头。接下来的夜空，由我点亮。',
-    skillName: '超新星坍缩', skillDescription: '释放高伤害范围爆发，清扫周围的三维空间。',
+    skillName: '超新星坍缩', skillDescription: '引爆战术火力场，清扫身边的敌群与弹幕。',
     passiveName: '余烬瞄准', passiveDescription: '基础攻击与暴击率较高，适合爆发与连锁构筑。',
     base: { maxHp: 120, attack: 34, defense: 5, crit: .18, critDamage: 1.8, speed: 3, energyMax: 100, energyRegen: 16, skillCooldown: 18, pickupRadius: .55, shield: 12 },
   },
@@ -37,13 +36,13 @@ export const CHARACTERS = Object.freeze([
     description: '让敌群慢下来，把时间变成自己的优势。她总在你开口前，听见那句尚未发生的求救。',
     story: '雾凛来自一座被折叠在同一秒中的观测站，方舟将她的回响唤醒时，她已经听过同一场告别无数次。她保存着一只永远慢一秒的怀表。只有接近寂星之心时，停滞的指针才会轻轻跳动。',
     quote: '这一次，我们有足够的时间。',
-    skillName: '零时回廊', skillDescription: '冻结敌人的进攻节奏，获得重新规划空间路线的机会。',
-    passiveName: '时间余量', passiveDescription: '技能冷却更短，能量恢复更快。',
+    skillName: '零时回廊', skillDescription: '冻结敌人的进攻节奏，为绕行、占点与反击争取时间。',
+    passiveName: '时间余量', passiveDescription: '技能冷却更短，闪避充能更快。',
     base: { maxHp: 118, attack: 26, defense: 7, crit: .13, critDamage: 1.7, speed: 2.9, energyMax: 105, energyRegen: 19, skillCooldown: 14, pickupRadius: .65, shield: 18 },
   },
   {
     id: 'lyra', name: '弦月', title: '深空协奏者', rarity: 'SR', element: '电弧', color: '#82c8d8', portraitIndex: 3,
-    description: '用连续电弧连接分散在空间中的敌人。她的每次出击，都是一段只写给星海的旋律。',
+    description: '用连续电弧连接战场上的敌人。她的每次出击，都是一段只写给星海的旋律。',
     story: '弦月曾负责把幸存者的声音编入方舟记忆库，却在坍缩后失去了自己的歌声。她从星骸间的电弧里辨认出熟悉的节拍，将每段残响编成新的航行坐标。她想让失散的人们，再听见彼此一次。',
     quote: '听见了吗？这是我们反击的前奏。',
     skillName: '群星连奏', skillDescription: '释放连锁攻击，让分散的敌群同时承受打击。',
@@ -70,25 +69,54 @@ export const CHARACTERS = Object.freeze([
   },
 ].map(character => Object.freeze({ ...character, base: Object.freeze(character.base) })));
 
+/** Only deployed support slots grant these bonuses; the lead uses its own stats. */
+export const SUPPORT_BONUSES = Object.freeze(Object.fromEntries(Object.entries({
+  nova: { name: '余烬火控', description: '主驾驶员攻击 +8%', bonuses: { attackMultiplier: 1.08 } },
+  aegis: { name: '棱晶掩护', description: '主驾驶员生命 +12%，初始护盾 +12', bonuses: { maxHpMultiplier: 1.12, shield: 12 } },
+  echo: { name: '时序校准', description: '主驾驶员技能冷却 -8%', bonuses: { cooldownMultiplier: .92 } },
+  lyra: { name: '协奏锁定', description: '主驾驶员暴击率 +4%', bonuses: { crit: .04 } },
+  rook: { name: '应急装甲', description: '主驾驶员防御 +4', bonuses: { defense: 4 } },
+  iris: { name: '战场搜集', description: '主驾驶员拾取范围 +0.4，闪避充能速度提高', bonuses: { pickupRadius: .4, energyRegen: 2 } },
+}).map(([id, value]) => [id, Object.freeze({ ...value, bonuses: Object.freeze(value.bonuses) })])));
+
+export const MISSION_REWARDS = Object.freeze(Object.fromEntries([
+  ['m1', 60, 50, 150], ['m2', 80, 65, 180], ['m3', 100, 80, 180], ['m4', 140, 110, 210],
+].map(([id, crystals, materials, targetTime]) => [id, Object.freeze({ crystals, materials, targetTime, firstClear: 160 })])));
+
 const byId = new Map(CHARACTERS.map(character => [character.id, character]));
+const missionIds = Object.keys(MISSION_REWARDS);
 const pools = Object.fromEntries(['SSR', 'SR', 'R'].map(rarity => [rarity, CHARACTERS.filter(character => character.rarity === rarity)]));
 const own = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const integer = (value, fallback = 0, max = Number.MAX_SAFE_INTEGER) => typeof value === 'number' && Number.isFinite(value) ? Math.min(max, Math.max(0, Math.floor(value))) : fallback;
 const round = (value, digits = 2) => Number(value.toFixed(digits));
 const validRunId = value => typeof value === 'string' && /^[a-zA-Z0-9_.:-]{1,96}$/.test(value);
+const decimal = (value, fallback = 0, max = Number.MAX_SAFE_INTEGER) => typeof value === 'number' && Number.isFinite(value) ? Math.min(max, Math.max(0, value)) : fallback;
+
+function unlockedFromRecords(records) {
+  const unlocked = ['m1'];
+  for (let index = 0; index < missionIds.length - 1; index++) {
+    if (records[missionIds[index]].clears === 0) break;
+    unlocked.push(missionIds[index + 1]);
+  }
+  return unlocked;
+}
 
 function defaultProfile(starter = false) {
   return {
-    version: 2,
+    version: 3,
     starterGranted: true,
     crystals: starter ? GACHA_RULES.starterCrystals : 0,
     materials: starter ? GACHA_RULES.starterMaterials : 0,
     selected: 'rook',
+    squad: ['rook', 'iris', null],
     characters: Object.fromEntries(CHARACTERS.map(character => [character.id, {
       owned: character.rarity === 'R', level: 1, resonance: 0, resonanceXp: 0, duplicates: 0,
     }])),
+    // Kept only as legacy metadata. It never changes rarity or pity rules.
     gacha: { total: 0, pitySR: 0, pitySSR: 0, beginnerClaimed: !starter },
+    stageRecords: Object.fromEntries(missionIds.map(id => [id, { clears: 0, bestStars: 0, bestTime: null, firstClearClaimed: false }])),
+    unlockedMissions: ['m1'],
     settledRuns: [], bestScore: 0, totalRuns: 0, totalKills: 0, wins: 0,
   };
 }
@@ -117,13 +145,32 @@ export function sanitizeProfile(raw) {
     if (!current.owned) { current.level = 1; current.duplicates = 0; current.resonance = 0; current.resonanceXp = 0; }
   }
   if (typeof raw.selected === 'string' && profile.characters[raw.selected]?.owned) profile.selected = raw.selected;
+  // selected is the authoritative lead for legacy saves. Invalid/duplicate supports are dropped.
+  profile.squad = [profile.selected, null, null];
+  if (Array.isArray(raw.squad)) {
+    for (let slot = 1; slot < 3; slot++) {
+      const id = raw.squad[slot];
+      if (byId.has(id) && profile.characters[id].owned && !profile.squad.includes(id)) profile.squad[slot] = id;
+    }
+  } else profile.squad[1] = profile.selected === 'iris' ? 'rook' : 'iris';
   if (isObject(raw.gacha)) {
     profile.gacha.total = integer(raw.gacha.total, 0, 1_000_000_000);
     profile.gacha.pitySR = integer(raw.gacha.pitySR, 0, GACHA_RULES.rarePity - 1);
     profile.gacha.pitySSR = integer(raw.gacha.pitySSR, 0, GACHA_RULES.ssrPity - 1);
     profile.gacha.beginnerClaimed = raw.gacha.beginnerClaimed !== false;
-    if (profile.gacha.total >= GACHA_RULES.beginnerPity) profile.gacha.beginnerClaimed = true;
+    if (profile.gacha.total >= GACHA_RULES.rarePity) profile.gacha.beginnerClaimed = true;
   }
+  const records = isObject(raw.stageRecords) ? raw.stageRecords : {};
+  for (const id of missionIds) {
+    const entry = isObject(records[id]) ? records[id] : {};
+    const record = profile.stageRecords[id];
+    record.clears = integer(entry.clears, 0, 1_000_000_000);
+    record.bestStars = record.clears > 0 ? Math.max(1, integer(entry.bestStars, 1, 3)) : 0;
+    record.bestTime = record.clears > 0 && typeof entry.bestTime === 'number' && Number.isFinite(entry.bestTime) && entry.bestTime >= 0 ? Math.min(86_400, entry.bestTime) : null;
+    // A legacy record with victories must not receive another first-clear grant.
+    record.firstClearClaimed = entry.firstClearClaimed === true || record.clears > 0;
+  }
+  profile.unlockedMissions = unlockedFromRecords(profile.stageRecords);
   profile.settledRuns = Array.isArray(raw.settledRuns) ? [...new Set(raw.settledRuns.filter(validRunId))] : [];
   profile.bestScore = integer(raw.bestScore, 0, 1_000_000_000);
   profile.totalRuns = Math.max(profile.settledRuns.length, integer(raw.totalRuns, 0, 1_000_000_000));
@@ -156,6 +203,22 @@ export function getStats(raw, id) {
   };
 }
 
+/** Combat-ready lead stats with both distinct, owned support passives applied once. */
+export function getSquadStats(raw) {
+  const profile = sanitizeProfile(raw), stats = getStats(profile, profile.selected);
+  for (const id of profile.squad.slice(1).filter(Boolean)) {
+    const bonus = SUPPORT_BONUSES[id].bonuses;
+    if (bonus.attackMultiplier) stats.attack *= bonus.attackMultiplier;
+    if (bonus.maxHpMultiplier) stats.maxHp *= bonus.maxHpMultiplier;
+    if (bonus.cooldownMultiplier) stats.skillCooldown *= bonus.cooldownMultiplier;
+    for (const key of ['shield', 'crit', 'defense', 'pickupRadius', 'energyRegen']) stats[key] += bonus[key] || 0;
+  }
+  stats.maxHp = Math.round(stats.maxHp);
+  stats.crit = round(Math.min(.75, stats.crit), 3);
+  for (const key of ['attack', 'skillCooldown', 'defense', 'pickupRadius', 'energyRegen']) stats[key] = round(stats[key]);
+  return stats;
+}
+
 function randomUnit(random) {
   const result = random();
   return typeof result === 'number' && Number.isFinite(result) ? Math.max(0, Math.min(1 - Number.EPSILON, result)) : .5;
@@ -173,8 +236,7 @@ export function pull(raw, count, random = Math.random) {
     const tracker = profile.gacha, roll = randomUnit(random);
     let rarity = roll < RARITY_RATES.SSR ? 'SSR' : roll < RARITY_RATES.SSR + RARITY_RATES.SR ? 'SR' : 'R';
     let guarantee = null;
-    if (!tracker.beginnerClaimed && tracker.total + 1 >= GACHA_RULES.beginnerPity) { rarity = 'SSR'; guarantee = 'beginner'; }
-    else if (tracker.pitySSR + 1 >= GACHA_RULES.ssrPity) { rarity = 'SSR'; guarantee = 'SSR'; }
+    if (tracker.pitySSR + 1 >= GACHA_RULES.ssrPity) { rarity = 'SSR'; guarantee = 'SSR'; }
     else if (rarity === 'R' && tracker.pitySR + 1 >= GACHA_RULES.rarePity) { rarity = 'SR'; guarantee = 'SR'; }
     const character = pools[rarity][Math.floor(randomUnit(random) * pools[rarity].length)];
     const entry = profile.characters[character.id], duplicate = entry.owned, before = entry.resonance;
@@ -189,7 +251,7 @@ export function pull(raw, count, random = Math.random) {
     tracker.total++;
     tracker.pitySSR = rarity === 'SSR' ? 0 : tracker.pitySSR + 1;
     tracker.pitySR = rarity === 'SSR' || rarity === 'SR' ? 0 : tracker.pitySR + 1;
-    if (rarity === 'SSR') tracker.beginnerClaimed = true;
+    if (rarity === 'SSR' || tracker.total >= GACHA_RULES.rarePity) tracker.beginnerClaimed = true;
     draws.push({ id: character.id, character, rarity, duplicate, materials, resonanceGain: entry.resonance - before, resonance: entry.resonance, resonanceXp: entry.resonanceXp, guarantee });
   }
   return { ok: true, profile, draws, cost };
@@ -212,10 +274,28 @@ export function levelUp(raw, id) {
 }
 
 export function selectCharacter(raw, id) {
+  return setSquadSlot(raw, 0, id);
+}
+
+/** Assigning a deployed pilot swaps slots. Support slots may be cleared. */
+export function setSquadSlot(raw, slot, id) {
   const profile = sanitizeProfile(raw);
-  if (!byId.has(id) || !profile.characters[id]?.owned) return failure(profile, 'CHARACTER_LOCKED', '这名驾驶员尚未加入队伍。');
-  profile.selected = id;
-  return { ok: true, profile, character: byId.get(id), stats: getStats(profile, id) };
+  if (!Number.isInteger(slot) || slot < 0 || slot > 2) return failure(profile, 'INVALID_SLOT', '编队只有 1 个主驾驶位和 2 个支援位。');
+  if (id === null && slot === 0) return failure(profile, 'LEAD_REQUIRED', '主驾驶位必须保留一名驾驶员。');
+  if (id !== null && (!byId.has(id) || !profile.characters[id]?.owned)) return failure(profile, 'CHARACTER_LOCKED', '这名驾驶员尚未加入队伍。');
+  const previousSlot = id === null ? -1 : profile.squad.indexOf(id);
+  if (previousSlot !== -1 && previousSlot !== slot) {
+    // Swapping a lead into an empty support would leave no pilot in command.
+    if (previousSlot === 0 && profile.squad[slot] === null) return failure(profile, 'LEAD_REQUIRED', '请先选择新的主驾驶员，再将当前主驾驶员编入空支援位。');
+    profile.squad[previousSlot] = profile.squad[slot];
+  }
+  profile.squad[slot] = id;
+  profile.selected = profile.squad[0];
+  return { ok: true, profile, character: byId.get(profile.selected), slot, stats: getSquadStats(profile) };
+}
+
+export function getMissionAccess(raw, missionId) {
+  return missionIds.includes(missionId) && sanitizeProfile(raw).unlockedMissions.includes(missionId);
 }
 
 /** A round ID can receive rewards once for the lifetime of this local save. */
@@ -223,18 +303,38 @@ export function settleRun(raw, result = {}) {
   const profile = sanitizeProfile(raw);
   if (!isObject(result) || !validRunId(result.runId)) return failure(profile, 'INVALID_RUN', '本次深潜编号无效，未发放奖励。');
   if (profile.settledRuns.includes(result.runId)) return failure(profile, 'ALREADY_SETTLED', '这次深潜已经结算。');
+  if (!missionIds.includes(result.missionId)) return failure(profile, 'INVALID_MISSION', '未找到这次行动对应的关卡。');
+  if (!profile.unlockedMissions.includes(result.missionId)) return failure(profile, 'MISSION_LOCKED', '该关卡尚未解锁，请先完成前置行动。');
   const score = integer(result.score, 0, 1_000_000), kills = integer(result.kills, 0, 1000);
-  const wave = Math.max(1, integer(result.wave, 1, 5)), won = result.won === true;
-  const rewards = {
-    crystals: Math.min(4000, 160 + kills * 8 + (wave - 1) * 60 + Math.floor(score / 500) * 10 + (won ? 500 : 0)),
-    materials: Math.min(1600, 30 + kills * 3 + wave * 15 + (won ? 120 : 0)),
-  };
+  const elapsed = decimal(result.elapsed, 0, 86_400), hpRatio = decimal(result.hpRatio, 0, 1);
+  const damageTaken = decimal(result.damageTaken, 0, 1_000_000);
+  const evacuated = result.evacuated === true;
+  const won = result.won === true && !evacuated;
+  const abandoned = evacuated && elapsed < 15;
+  const mission = MISSION_REWARDS[result.missionId], record = profile.stageRecords[result.missionId];
+  const firstClear = won && !record.firstClearClaimed;
+  const stars = won ? 1 + Number(hpRatio >= .5) + Number(elapsed <= mission.targetTime) : 0;
+  const rewards = { crystals: 0, materials: 0, firstClear, stars, unlockedMission: null };
+  if (won) {
+    rewards.crystals = mission.crystals + (firstClear ? mission.firstClear : 0);
+    rewards.materials = mission.materials;
+    record.clears++;
+    record.bestStars = Math.max(record.bestStars, stars);
+    record.bestTime = record.bestTime === null ? elapsed : Math.min(record.bestTime, elapsed);
+    record.firstClearClaimed = true;
+    const unlocked = unlockedFromRecords(profile.stageRecords);
+    rewards.unlockedMission = unlocked.find(id => !profile.unlockedMissions.includes(id)) || null;
+    profile.unlockedMissions = unlocked;
+  } else if (!abandoned) {
+    rewards.crystals = Math.min(60, 20 + Math.floor(kills * .5));
+    rewards.materials = Math.min(35, 10 + kills);
+  }
   profile.crystals = Math.min(1_000_000_000, profile.crystals + rewards.crystals);
   profile.materials = Math.min(1_000_000_000, profile.materials + rewards.materials);
-  profile.bestScore = Math.max(profile.bestScore, score);
+  if (!abandoned) profile.bestScore = Math.max(profile.bestScore, score);
   profile.totalRuns++;
-  profile.totalKills += kills;
+  profile.totalKills = Math.min(1_000_000_000, profile.totalKills + kills);
   if (won) profile.wins++;
   profile.settledRuns.push(result.runId);
-  return { ok: true, profile, rewards, result: { runId: result.runId, score, kills, wave, won } };
+  return { ok: true, profile, rewards, result: { runId: result.runId, missionId: result.missionId, score, kills, elapsed, hpRatio, damageTaken, won, evacuated, abandoned } };
 }

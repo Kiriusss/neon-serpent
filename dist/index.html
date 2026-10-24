@@ -1,57 +1,75 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#10151f">
-<meta name="description" content="星骸回响：驾驶衔尾机穿越真正的三维折叠遗迹，唤醒驾驶员回响，自由构筑，挑战寂星之心。">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#15202b">
+<meta name="description" content="星骸回响：在文明沉没后的方舟，与驾驶员并肩，驾驶浮游机甲穿过弹幕，解放遗迹。平面战术机动、四章战役、肉鸽构筑与角色养成。">
 <title>星骸回响 — ECHOES OF THE STARFALL</title>
-<link rel="icon" href="./favicon.svg"><link rel="stylesheet" href="./style.css?v=2.1">
+<link rel="icon" href="./favicon.svg"><link rel="stylesheet" href="./style.css?v=3.0">
 <script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/addons/"}}</script>
 </head>
-<body>
+<body data-screen="lobby">
 <svg class="icon-defs" aria-hidden="true"><defs>
 <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></symbol>
 <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-7-7 7 7-7 7"/></symbol>
-<symbol id="i-cube" viewBox="0 0 24 24"><path d="m12 2 9 5v10l-9 5-9-5V7zm0 10v10M3 7l9 5 9-5"/></symbol>
 <symbol id="i-sound" viewBox="0 0 24 24"><path d="m11 5-5 4H3v6h3l5 4zM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
 <symbol id="i-mute" viewBox="0 0 24 24"><path d="m11 5-5 4H3v6h3l5 4zM16 9l6 6m0-6-6 6"/></symbol>
 <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-<symbol id="i-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8L20 9h-7z"/></symbol>
 <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
 <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 1v6m0 10v6M1 12h6m10 0h6"/></symbol>
+<symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 21v-4a6 6 0 0 1 12 0v4m1-16a3 3 0 0 1 0 6m3 3a5 5 0 0 1 2 4v3"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5zm9 0v5h5M8 12h8m-8 4h6"/></symbol>
 </defs></svg>
-<canvas id="world" tabindex="-1" aria-label="三维折叠遗迹战场"></canvas><div class="scene-shade" aria-hidden="true"></div>
+<canvas id="world" tabindex="-1" aria-label="平面机甲弹幕战场"></canvas><div class="scene-shade" aria-hidden="true"></div><div class="interface-grain" aria-hidden="true"></div>
 <header class="topbar">
-<button id="brand" class="brand" aria-label="返回方舟"><span class="brand-logo"><svg><use href="#i-star"/></svg></span><span>星骸回响<small>ECHOES OF THE STARFALL</small></span><i>02</i></button>
-<nav class="tabs menu-only" aria-label="主菜单"><button class="active" data-screen="lobby">作战终端</button><button data-screen="roster">驾驶员</button><button data-screen="gacha">回响寻访 <span>NEW</span></button></nav>
-<div class="top-tools"><span class="currency menu-only" title="星晶，通过探索获得"><b>✦</b><strong id="crystals">3,200</strong></span><span class="currency material menu-only" title="共鸣芯片，用于培养驾驶员"><b>▱</b><strong id="materials">200</strong></span><button id="sound" class="icon-button" aria-label="静音" title="声音 M"><svg><use href="#i-sound"/></svg></button><button id="help" class="icon-button" aria-label="操作指南">?</button><button id="pause" class="icon-button game-only" aria-label="暂停"><svg><use href="#i-pause"/></svg></button></div>
+<button id="brand" class="brand" aria-label="返回方舟"><svg><use href="#i-star"/></svg><span>星骸回响<small>ECHOES OF THE STARFALL</small></span></button>
+<div class="terminal-location menu-only"><span id="screen-code">ARK 07</span><b id="screen-name">方舟主控</b></div>
+<div class="top-tools"><span class="currency menu-only"><b>✦</b><strong id="crystals">1,600</strong><small>星晶</small></span><span class="currency material menu-only"><b>▱</b><strong id="materials">200</strong><small>共鸣芯片</small></span><button id="sound" class="icon-button" aria-label="静音" title="声音 M"><svg><use href="#i-sound"/></svg></button><button id="help" class="icon-button" aria-label="操作指南">?</button><button id="pause" class="icon-button game-only" aria-label="暂停"><svg><use href="#i-pause"/></svg></button></div>
 </header>
 <main id="menus" class="menu-only">
 <section id="lobby" class="screen lobby">
-<div class="lobby-copy"><p class="eyebrow"><i></i> ARK 07 / 深空探索协议</p><div class="chapter-label">序章 <span>文明沉没之后</span></div><h1>群星已坠落。<br>你，是<span>回声。</span></h1><p class="story-intro">坍缩把文明折进了多层空间。<br>驾驶衔尾机，回收散落的记忆星骸，<br>循着最后的信号，找到「寂星之心」。</p><button id="story" class="text-button">阅读世界档案 <span>↗</span></button>
-<div class="mission-strip"><span><b>XYZ</b> 六向空间机动</span><span><b>3 → 1</b> 自由构筑</span><span><b>05</b> 遗迹区段</span></div>
-<div class="difficulty"><span>探索强度</span><button data-difficulty="chill">观测</button><button class="active" data-difficulty="normal">深入</button><button data-difficulty="hard">侵蚀</button></div>
-<button id="start" class="primary launch"><span><svg><use href="#i-cube"/></svg> 潜入折叠遗迹</span><span>ENTER <svg><use href="#i-arrow"/></svg></span></button><p class="launch-note">每次坠落，都让下一次启航更强。<b id="best-score">最高记录 0</b></p>
-</div>
-<div class="pilot-showcase"><div class="orbit-graphic" aria-hidden="true"></div><div id="lobby-portrait" class="portrait hero-portrait" role="img" aria-label="当前驾驶员立绘"></div><div class="pilot-caption"><p id="lobby-rarity" class="rarity">R / VANGUARD</p><h2 id="lobby-name">砾石</h2><p id="lobby-title">不退场的前锋</p><blockquote id="lobby-quote">「再难的路，也能一步一步走过去。」</blockquote><button id="change-pilot" class="outline-button">切换驾驶员 <span>↗</span></button></div><span class="vertical-label">NEURAL LINK / ACTIVE</span></div>
+<div class="lobby-scene"><div class="hangar-line"></div><span class="hangar-number">07</span><div id="lobby-portrait" class="fullbody secretary" role="img" aria-label="当前驾驶员立绘"></div><span class="vertical-label">NEURAL LINK ESTABLISHED / ARK SEVEN</span></div>
+<div class="commander-card"><small>ARK COMMANDER</small><h2>欢迎归舰，链接者。</h2><div><span class="status-dot"></span> 方舟 07 · 航行中 <b id="home-progress">0 / 4</b></div><button id="story" class="text-button">文明沉没之后 / 世界档案 ↗</button></div>
+<div class="secretary-dialogue"><div><span id="lobby-rarity" class="rarity">R</span><h2 id="lobby-name">砾石</h2><small id="lobby-title">不退场的前锋</small><button id="change-secretary" aria-label="切换值班驾驶员">⇄</button></div><p id="lobby-quote">「再难的路，也能一步一步走过去。」</p><span>值班驾驶员 / 点击 ⇄ 切换</span></div>
+<nav class="home-terminal" aria-label="方舟功能">
+<div class="terminal-heading"><span>OPERATION SYSTEM</span><b>作战终端</b><i>ONLINE</i></div>
+<button class="operation-entry" data-screen="campaign"><small>MAIN STORY / 主线作战</small><strong>坠星之后<span>↗</span></strong><p id="home-mission">01 — 破晓码头</p><div class="operation-lines" aria-hidden="true"></div></button>
+<div class="terminal-grid"><button data-screen="squad" class="menu-tile"><svg><use href="#i-people"/></svg><span>编队<small>FORMATION</small></span><b>01</b></button><button data-screen="roster" class="menu-tile"><svg><use href="#i-file"/></svg><span>驾驶员<small>PERSONNEL</small></span><b id="owned-count">02</b></button></div>
+<button data-screen="gacha" class="recruit-entry"><div class="portrait" style="--px:0%;--py:0%"></div><span><small>PERMANENT SIGNAL</small><strong>循光回响</strong><em>常驻寻访 / SSR 0.8%</em></span><b>→</b></button>
+<div class="home-mini"><button id="records">作战记录 <span>↗</span></button><button id="settings">系统设置 <span>⚙</span></button></div>
+<p class="terminal-message"><i></i> 新的信号已抵达。「寂星之心」等待回答。</p>
+</nav>
+<div class="lobby-bottom"><span>CHAPTER 01 <b>LAST LIGHT, FIRST DAWN.</b></span><span>回收记忆，重新点亮归途。</span></div>
 </section>
-<section id="roster" class="screen roster" hidden><div class="section-heading"><p class="eyebrow">PERSONNEL ARCHIVE / 驾驶员档案</p><h1>所有相遇，<span>都有回响。</span></h1><p>升级同步率，提升战斗数值；重复回响提升共鸣阶数。</p></div><div class="roster-layout"><div id="character-grid" class="character-grid"></div><article id="character-detail" class="character-detail"></article></div></section>
-<section id="gacha" class="screen gacha" hidden><div class="banner-copy"><p class="eyebrow">PERMANENT SIGNAL / 常驻回响</p><div class="banner-tag">新手首 10 次寻访必得 SSR</div><h1>循光而来。<br><span>与星辰重逢。</span></h1><p>方舟档案中，还有未曾熄灭的意识。<br>发送星晶信号，唤醒与你并肩的驾驶员。</p><div class="banner-feature"><span>SSR</span><div><b>星烬 / 白曜</b><small>超新星爆发 · 绝对防御领域</small></div></div><div class="pity-panel"><div><span>SSR 保底进度</span><b id="ssr-pity">0 / 50</b></div><div class="thin-track"><i id="pity-bar"></i></div><p id="beginner-note">新手保障生效：首次 10 抽内至少获得 1 名 SSR。</p></div><div class="pull-actions"><button id="pull-one" class="outline-button">寻访一次 <small>✦ 160</small></button><button id="pull-ten" class="primary">寻访十次 <small>✦ 1,600</small></button></div><div class="gacha-links"><button id="rates" class="text-button">概率与保底规则</button><button id="history" class="text-button">寻访记录 ↗</button></div><p class="economy-note">星晶通过探索结算获得 · 无付费入口 · 本地存档</p></div><div class="banner-art"><div class="portrait banner-portrait" style="--px:0%;--py:0%"></div><div class="banner-name">NOVA<span>星烬</span><small>「别回头。接下来的夜空，由我点亮。」</small></div><span class="vertical-label">SIGNAL FOUND / 001</span></div></section>
+<section id="campaign" class="screen campaign" hidden>
+<div class="page-heading"><div><p class="eyebrow">CHAPTER 01 / MAIN OPERATION</p><h1>坠星之后</h1><p>信号还在。沿着旧航线，找回文明最后的心跳。</p></div><span class="chapter-watermark">01</span></div>
+<div class="campaign-layout"><div class="campaign-map"><div class="map-top"><span>遗迹作战图 / ASTER SECTOR</span><b id="campaign-progress">0 / 4 CLEARED</b></div><div class="map-grid" aria-hidden="true"></div><div id="mission-nodes" class="mission-nodes"></div><div class="map-legend"><span>◆ 已解锁</span><span>◇ 待探索</span><span>★ 作战评级</span></div></div><article id="mission-detail" class="mission-detail"></article></div>
+</section>
+<section id="squad" class="screen squad" hidden>
+<div class="page-heading"><div><p class="eyebrow">SQUAD 01 / NEURAL FORMATION</p><h1>共鸣编队</h1><p>一名主驾驶，两名支援。编队增益在出击时生效。</p></div><button class="outline-button" data-screen="campaign">返回作战 →</button></div>
+<div id="squad-slots" class="squad-slots"></div><div class="squad-bottom"><div id="squad-summary" class="squad-summary"></div><div><p>支援技能 <kbd>Q</kbd> · 冷却 25 秒</p><small>支援驾驶员会共同响应召唤，释放各自的支援效果。</small></div><button class="primary" data-screen="campaign">编队确认 / 选择关卡 →</button></div>
+</section>
+<section id="roster" class="screen roster" hidden><div class="page-heading"><div><p class="eyebrow">PERSONNEL / 驾驶员档案</p><h1>回响名册</h1><p>同步率决定基础数值，共鸣阶数随重复回响提升。</p></div><button class="outline-button" data-screen="squad">调整编队 →</button></div><div class="roster-layout"><div id="character-grid" class="character-grid"></div><article id="character-detail" class="character-detail"></article></div></section>
+<section id="gacha" class="screen gacha" hidden>
+<div class="gacha-illustration"><div class="fullbody gacha-person gacha-nova" style="--px:0%;--py:0%"></div><div class="fullbody gacha-person gacha-aegis" style="--px:50%;--py:0%"></div><span class="gacha-art-word">AFTER<br>THE<br>STARFALL.</span><div class="gacha-feature"><b>星烬 / 白曜</b><span>SSR · 热熵与棱晶的回响</span></div></div>
+<div class="banner-copy"><p class="eyebrow">PERMANENT RECRUITMENT / 常驻寻访</p><span class="banner-tag">常驻信号 · 无限期开放</span><h1>循光回响</h1><p class="banner-subtitle">群星失声之后，总有人回应你。</p><p>发送深空信号，唤醒方舟中沉睡的驾驶员。<br>每一道归来的回响，都会成为并肩的力量。</p><div class="gacha-rate">SSR <b>0.8%</b><span>SR 9.2% · R 90%</span></div><div class="pity-panel"><div><span>SSR 保障计数</span><b id="ssr-pity">0 / 80</b></div><div class="thin-track"><i id="pity-bar"></i></div><p id="rare-pity">最多 10 次寻访获得 SR 或以上</p></div><div class="pull-actions"><button id="pull-one" class="outline-button">寻访一次 <small>✦ 160</small></button><button id="pull-ten" class="primary">寻访十次 <small>✦ 1,600</small></button></div><div class="gacha-links"><button id="rates" class="text-button">概率详情</button><button id="history" class="text-button">寻访记录 ↗</button></div><p class="economy-note">星晶来自作战与首次通关 · 无付费入口</p></div>
+</section>
+<nav class="bottom-nav" aria-label="终端页面"><button class="active" data-screen="lobby"><span>⌂</span>方舟</button><button data-screen="campaign"><span>◇</span>作战</button><button data-screen="squad"><span>⌘</span>编队</button><button data-screen="roster"><span>▤</span>驾驶员</button><button data-screen="gacha"><span>✦</span>寻访</button></nav>
 </main>
 <section id="battle-hud" class="battle-hud game-only" aria-label="战斗信息">
-<aside class="left-hud"><div class="pilot-hud"><div id="hud-portrait" class="portrait"></div><div><small id="hud-rarity">R · 同步率 1</small><h3 id="hud-name">砾石</h3><span id="hud-class">衔尾机 / 神经链接</span></div></div><div class="health-label"><span>机体完整度</span><b id="hp-text">120 / 120</b></div><div class="health-track"><i id="hp-bar"></i></div><div class="shield-label">◇ 防护 <b id="shield">15</b><span id="invulnerable"></span></div><div class="score-box"><span>星骸积分</span><b id="score">000000</b></div><div class="small-stats"><span>击破 <b id="kills">00</b></span><span>长度 <b id="length">06</b></span><span>时间 <b id="time">00:00</b></span></div><div class="level-label"><b>LV.<span id="level">1</span></b><span id="xp-text">0 / 40</span></div><div class="xp-track"><i id="xp-bar"></i></div><div class="coordinate-box"><small>当前位置 / 空间坐标</small><div><span>X <b id="coord-x">7</b></span><span>Y <b id="coord-y">3</b></span><span>Z <b id="coord-z">7</b></span></div></div><div class="height-indicator"><span>高度</span><div id="height-levels"></div><strong id="height-label">L4 / 7</strong></div></aside>
-<div class="wave-hud"><p id="wave-code">SECTOR 01 / 05</p><h2 id="wave-name">破碎航道</h2><span id="objective">吞噬星骸获得经验，自动攻击附近敌人</span></div>
-<aside class="right-hud"><div class="hud-section-title">本局异构构筑 <span id="build-count">0</span></div><div id="build-list" class="build-list"><p>收集星骸，升级后选择异构技术。</p></div><div class="combat-stats"><span>攻击 <b id="stat-attack">24</b></span><span>暴击 <b id="stat-crit">10%</b></span><span>防御 <b id="stat-defense">5</b></span></div><div class="spatial-hint"><span>空间机动</span><p><kbd>W</kbd> 远离 <kbd>S</kbd> 靠近</p><p><kbd>A</kbd> 左移 <kbd>D</kbd> 右移</p><p><kbd>Q</kbd> 升高 <kbd>E</kbd> 降低</p><small>方向沿世界坐标，不随镜头旋转</small></div></aside>
-<div id="boss-hud" class="boss-hud" hidden><span>THE SILENT HEART / 寂星之心</span><div><i id="boss-bar"></i></div><small id="boss-hp"></small></div>
-<div class="ability-dock"><div class="phase-ability"><div><span><kbd>SPACE</kbd> 相位穿行</span><b id="energy-text">100%</b></div><div class="energy-track"><i id="energy-bar"></i></div><small>按住加速并穿过自身 · 松开恢复</small></div><button id="skill" class="skill-button"><span class="skill-icon"><svg><use href="#i-star"/></svg></span><span><small>F / 主动技能</small><b id="skill-name">战地重整</b></span><strong id="skill-cooldown">就绪</strong></button></div>
+<div class="battle-objective"><div><small id="wave-code">OPERATION 01</small><b id="wave-name">破晓码头</b><span id="time">00:00</span></div><p id="objective">消灭异构体，收复码头</p><div class="objective-track"><i id="objective-bar"></i></div></div>
+<div class="battle-status"><span>击破 <b id="kills">00</b></span><span>评分 <b id="score">000000</b></span><button id="build-open">异构构筑 <b id="build-count">0</b> ↗</button></div>
+<div id="boss-hud" class="boss-hud" hidden><span>寂星之心 / THE SILENT HEART</span><div><i id="boss-bar"></i></div><small id="boss-hp"></small></div>
+<div class="combat-dock"><div class="pilot-health"><div id="hud-portrait" class="portrait"></div><div><div class="health-label"><b id="hud-name">砾石</b><span id="hp-text">120 / 120</span></div><div class="health-track"><i id="hp-bar"></i></div><small>护盾 <b id="shield">0</b><span id="invulnerable"></span></small></div></div><div class="experience"><div><b>LV.<span id="level">1</span></b><small id="xp-text">0 / 40</small></div><div class="xp-track"><i id="xp-bar"></i></div><small>回收晶体 · 选择技术</small></div><div class="combat-abilities"><button id="dash" class="ability-button"><kbd>SPACE</kbd><span>矢量闪避<small id="dash-cooldown">◆ ◆</small></span></button><button id="skill" class="ability-button skill-button"><kbd>F</kbd><span id="skill-name">战地重整</span><strong id="skill-cooldown">就绪</strong></button><button id="support" class="ability-button"><kbd>Q</kbd><span>编队支援<small id="support-cooldown">就绪</small></span></button></div></div>
+<div class="battle-help"><kbd>WASD</kbd> 移动 · 松手停靠 <span>自动锁定攻击 · 红色区域即将命中</span></div>
 </section>
 <div id="callout" class="callout" aria-live="polite"></div><div id="damage-flash" class="damage-flash" aria-hidden="true"></div>
-<div id="countdown" class="countdown" hidden><p>神经链接已建立</p><b>3</b><small>WASD 平移 · Q 升高 / E 降低 · F 技能</small></div>
-<div id="touch-controls" class="touch-controls game-only"><div class="touch-directions"><button data-turn="rise" class="rise">Q ↑ 升</button><button data-turn="up">W ↑</button><button data-turn="fall" class="fall">E ↓ 降</button><button data-turn="left">A ←</button><button data-turn="down">S ↓</button><button data-turn="right">D →</button></div><button id="touch-phase" class="touch-phase">相位<br><small>按住</small></button></div>
-<section id="upgrade-overlay" class="upgrade-overlay" hidden aria-label="选择本局升级"><div class="upgrade-heading"><p class="eyebrow">EVOLUTION PROTOCOL / 异构技术融合</p><h2>这一次，<span>由你定义进化。</span></h2><p>选择一项强化。本局叠加生效，战斗已暂停。</p></div><div id="upgrade-cards" class="upgrade-cards"></div><small class="upgrade-hint">按 1 / 2 / 3 选择，也可以点击卡片</small></section>
-<div id="summon-overlay" class="summon-overlay" hidden><div id="summon-stage" class="summon-stage"><div class="signal-ring"></div><span>正在解析深空信号</span><b>RESONANCE FOUND</b><button id="skip-summon" class="outline-button">跳过演出</button></div><div id="summon-results" class="summon-results" hidden><div class="results-heading"><p class="eyebrow">SIGNAL DECODED / 回响已抵达</p><h2>欢迎，<span>归来。</span></h2></div><div id="draw-cards" class="draw-cards"></div><div class="results-actions"><button id="draw-close" class="primary">收录回响 · 返回</button><button id="draw-roster" class="outline-button">查看驾驶员 →</button></div></div></div>
+<div id="countdown" class="countdown" hidden><p>作战链接建立</p><b>3</b><small>WASD 自由移动 · SPACE 闪避 · F 技能 · Q 支援</small></div>
+<div id="touch-controls" class="touch-controls game-only"><div class="touch-directions"><button data-move="up" aria-label="向前移动">↑</button><button data-move="left" aria-label="向左移动">←</button><button data-move="down" aria-label="向后移动">↓</button><button data-move="right" aria-label="向右移动">→</button></div></div>
+<section id="upgrade-overlay" class="upgrade-overlay" hidden aria-label="选择本局升级"><div class="upgrade-heading"><p class="eyebrow">FIELD UPGRADE / 异构技术</p><h2>战术重构</h2><p>选择一项技术，立即加入本局构筑。战斗已暂停。</p></div><div id="upgrade-cards" class="upgrade-cards"></div><small class="upgrade-hint">按 1 / 2 / 3 选择，也可以点击卡片</small></section>
+<div id="summon-overlay" class="summon-overlay" hidden><div id="summon-stage" class="summon-stage"><div class="signal-ring"></div><span>方舟正在接收信号</span><b>RESONANCE FOUND</b><button id="skip-summon" class="outline-button">跳过演出</button></div><div id="summon-results" class="summon-results" hidden><div class="results-heading"><p class="eyebrow">SIGNAL DECODED</p><h2>回响接收完成</h2></div><div id="draw-cards" class="draw-cards"></div><div class="results-actions"><button id="draw-close" class="primary">收录回响 · 返回</button><button id="draw-roster" class="outline-button">查看驾驶员 →</button></div></div></div>
 <div id="modal" class="modal" hidden><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button id="modal-close" class="icon-button modal-close" aria-label="关闭"><svg><use href="#i-close"/></svg></button><p id="modal-eyebrow" class="eyebrow"></p><h2 id="modal-title"></h2><div id="modal-content"></div><div id="modal-actions"></div></section></div>
-<footer class="footer"><span><i></i> ARK 07 <span class="menu-only">/ 每一道轨迹，都是文明未熄的回声。</span><span class="game-only">/ 六向机动 · 自动攻击 · 躲避红色预警</span></span><div class="footer-tools"><button id="camera" class="game-only">C · 等轴视角</button><button id="quality">光影：精致</button><button id="fullscreen" title="全屏">⛶</button><span>VER 2.0</span></div></footer>
-<div id="toast" class="toast" role="status"></div><div id="loading" class="loading"><div class="loading-symbol">✦</div><h2>星骸回响</h2><p>正在连接方舟记忆库</p><small>ESTABLISHING NEURAL LINK</small></div>
-<script type="module" src="./main.js?v=2.1"></script>
+<footer class="footer"><span><i></i> ARK 07 <span class="menu-only">/ 星海寂静，回响未熄。</span></span><div class="footer-tools"><button id="camera" class="game-only">C · 战术视角</button><button id="quality">光影：精致</button><button id="fullscreen" aria-label="全屏">⛶</button><span>VER 3.0</span></div></footer>
+<div id="toast" class="toast" role="status"></div><div id="loading" class="loading"><div class="loading-symbol">✦</div><h2>星骸回响</h2><p>正在连接方舟终端</p><small>ESTABLISHING NEURAL LINK</small></div>
+<script type="module" src="./main.js?v=3.0"></script>
 <noscript><div class="loading"><h2>请启用 JavaScript</h2><p>星骸回响需要浏览器脚本支持。</p></div></noscript>
 </body></html>
